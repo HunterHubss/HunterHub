@@ -10,13 +10,13 @@ gui.Parent = player:WaitForChild("PlayerGui")
 
 -- Основной фрейм
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 200) -- Увеличенный размер
-frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+frame.Size = UDim2.new(0, 300, 0, 250) -- Увеличенная высота для новой кнопки
+frame.Position = UDim2.new(0.5, -150, 0.5, -125)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 frame.BackgroundTransparency = 0.2
 frame.BorderSizePixel = 0
-frame.Visible = false -- Скрыт по умолчанию
+frame.Visible = false
 frame.Parent = gui
 
 -- Радужная обводка фрейма
@@ -78,25 +78,40 @@ textStroke.Parent = title
 rainbowAnimation(frameStroke)
 rainbowAnimation(textStroke)
 
--- Кнопка телепорта
-local teleportButton = Instance.new("TextButton")
-teleportButton.Size = UDim2.new(0.9, 0, 0, 35)
-teleportButton.Position = UDim2.new(0.05, 0, 0.25, 0)
-teleportButton.Text = "Телепорт к TPTouch2"
-teleportButton.Font = Enum.Font.SourceSansBold
-teleportButton.TextSize = 16
-teleportButton.Parent = frame
+-- Кнопка телепорта к TPTouch2
+local teleportButton1 = Instance.new("TextButton")
+teleportButton1.Size = UDim2.new(0.9, 0, 0, 30)
+teleportButton1.Position = UDim2.new(0.05, 0, 0.2, 0)
+teleportButton1.Text = "Телепорт к TPTouch2"
+teleportButton1.Font = Enum.Font.SourceSansBold
+teleportButton1.TextSize = 16
+teleportButton1.Parent = frame
 
--- Текстбокс и кнопка скорости
+-- Новая кнопка телепорта к GearShop
+local teleportButton2 = Instance.new("TextButton")
+teleportButton2.Size = UDim2.new(0.9, 0, 0, 30)
+teleportButton2.Position = UDim2.new(0.05, 0, 0.35, 0)
+teleportButton2.Text = "Телепорт к GearShop"
+teleportButton2.Font = Enum.Font.SourceSansBold
+teleportButton2.TextSize = 16
+teleportButton2.Parent = frame
+
+-- Текстбокс скорости (с исправленным цветом)
 local speedBox = Instance.new("TextBox")
 speedBox.Size = UDim2.new(0.6, 0, 0, 30)
-speedBox.Position = UDim2.new(0.05, 0, 0.55, 0)
+speedBox.Position = UDim2.new(0.05, 0, 0.65, 0)
 speedBox.PlaceholderText = "Скорость (число)"
+speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50) -- Исправленный цвет
+speedBox.BackgroundTransparency = 0.2
+speedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedBox.Font = Enum.Font.SourceSans
+speedBox.TextSize = 14
 speedBox.Parent = frame
 
+-- Кнопка применения скорости
 local speedButton = Instance.new("TextButton")
 speedButton.Size = UDim2.new(0.25, 0, 0, 30)
-speedButton.Position = UDim2.new(0.7, 0, 0.55, 0)
+speedButton.Position = UDim2.new(0.7, 0, 0.65, 0)
 speedButton.Text = "Применить"
 speedButton.Font = Enum.Font.SourceSansBold
 speedButton.TextSize = 14
@@ -117,20 +132,24 @@ local function setupButton(button)
     end)
 end
 
-setupButton(teleportButton)
+setupButton(teleportButton1)
+setupButton(teleportButton2)
 setupButton(speedButton)
 
--- Функционал
-local function teleportToTPTouch2()
-    local tptouch2 = workspace:FindFirstChild("TPTouch2")
-    if tptouch2 then
+-- Функционал телепортации
+local function teleportTo(partName)
+    local part = workspace:FindFirstChild(partName)
+    if part then
         local rootPart = character:FindFirstChild("HumanoidRootPart")
         if rootPart then
-            rootPart.CFrame = tptouch2.CFrame * CFrame.new(0, 3, 0)
+            rootPart.CFrame = part.CFrame * CFrame.new(0, 3, 0)
         end
+    else
+        warn(partName.." не найден в workspace!")
     end
 end
 
+-- Функция изменения скорости
 local function changeSpeed()
     local speed = tonumber(speedBox.Text)
     if speed then
@@ -141,7 +160,15 @@ local function changeSpeed()
     end
 end
 
-teleportButton.MouseButton1Click:Connect(teleportToTPTouch2)
+-- Подключение кнопок
+teleportButton1.MouseButton1Click:Connect(function()
+    teleportTo("TPTouch2")
+end)
+
+teleportButton2.MouseButton1Click:Connect(function()
+    teleportTo("GearShop")
+end)
+
 speedButton.MouseButton1Click:Connect(changeSpeed)
 
 -- Закрытие GUI
