@@ -1,0 +1,169 @@
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player:WaitForChild("CharacterAdded"):Wait()
+
+-- Создаем GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "HunterHubGUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- Основной фрейм
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 250, 0, 150)
+frame.Position = UDim2.new(0.5, -125, 0.8, -75)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+frame.BackgroundTransparency = 0.2
+frame.BorderSizePixel = 0
+frame.Parent = gui
+
+-- Радужная обводка фрейма
+local frameStroke = Instance.new("UIStroke")
+frameStroke.Thickness = 3
+frameStroke.LineJoinMode = Enum.LineJoinMode.Round
+frameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+frameStroke.Parent = frame
+
+-- Анимация обводки фрейма
+task.spawn(function()
+    local hue = 0
+    while true do
+        hue = (hue + 0.01) % 1
+        frameStroke.Color = Color3.fromHSV(hue, 1, 1)
+        task.wait(0.05)
+    end
+end)
+
+-- Заголовок с радужной обводкой
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -10, 0, 25)
+title.Position = UDim2.new(0, 5, 0, 5)
+title.Text = "Hunter Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 18
+title.BackgroundTransparency = 1
+title.Parent = frame
+
+-- Радужная обводка для текста
+local textStroke = Instance.new("UIStroke")
+textStroke.Thickness = 2
+textStroke.LineJoinMode = Enum.LineJoinMode.Round
+textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+textStroke.Parent = title
+
+-- Анимация обводки текста
+task.spawn(function()
+    local hue = 0.5 -- Начинаем с другого цвета для контраста
+    while true do
+        hue = (hue + 0.015) % 1
+        textStroke.Color = Color3.fromHSV(hue, 1, 1)
+        task.wait(0.05)
+    end
+end)
+
+-- Кнопка телепорта
+local teleportButton = Instance.new("TextButton")
+teleportButton.Size = UDim2.new(0.9, 0, 0, 30)
+teleportButton.Position = UDim2.new(0.05, 0, 0.3, 0)
+teleportButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+teleportButton.BackgroundTransparency = 0.3
+teleportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+teleportButton.Text = "Телепорт к TPTouch2"
+teleportButton.Font = Enum.Font.SourceSansBold
+teleportButton.TextSize = 14
+teleportButton.AutoButtonColor = true
+teleportButton.Parent = frame
+
+-- Текстбокс для скорости
+local speedBox = Instance.new("TextBox")
+speedBox.Size = UDim2.new(0.6, 0, 0, 25)
+speedBox.Position = UDim2.new(0.05, 0, 0.6, 0)
+speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+speedBox.BackgroundTransparency = 0.2
+speedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedBox.PlaceholderText = "Скорость (число)"
+speedBox.Font = Enum.Font.SourceSans
+speedBox.TextSize = 14
+speedBox.Parent = frame
+
+-- Кнопка изменения скорости
+local speedButton = Instance.new("TextButton")
+speedButton.Size = UDim2.new(0.25, 0, 0, 25)
+speedButton.Position = UDim2.new(0.7, 0, 0.6, 0)
+speedButton.BackgroundColor3 = Color3.fromRGB(70, 50, 70)
+speedButton.BackgroundTransparency = 0.3
+speedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedButton.Text = "Применить"
+speedButton.Font = Enum.Font.SourceSansBold
+speedButton.TextSize = 14
+speedButton.AutoButtonColor = true
+speedButton.Parent = frame
+
+-- Функции
+local function teleportToTPTouch2()
+    local tptouch2 = workspace:FindFirstChild("TPTouch2")
+    if tptouch2 then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid:GetState() ~= Enum.HumanoidStateType.Dead then
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                rootPart.CFrame = tptouch2.CFrame * CFrame.new(0, 3, 0)
+            end
+        end
+    end
+end
+
+local function changeSpeed()
+    local speed = tonumber(speedBox.Text)
+    if speed then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = speed
+        end
+    end
+end
+
+-- Подключение кнопок
+teleportButton.MouseButton1Click:Connect(teleportToTPTouch2)
+speedButton.MouseButton1Click:Connect(changeSpeed)
+
+-- Перемещение GUI
+local dragging = false
+local dragInput, dragStart, frameStart
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        frameStart = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(
+            frameStart.X.Scale, 
+            frameStart.X.Offset + delta.X, 
+            frameStart.Y.Scale, 
+            frameStart.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- Обновление персонажа
+player.CharacterAdded:Connect(function(newChar)
+    character = newChar
+end)
