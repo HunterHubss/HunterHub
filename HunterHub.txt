@@ -16,7 +16,7 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 frame.BackgroundTransparency = 0.2
 frame.BorderSizePixel = 0
-frame.Visible = false
+frame.Visible = true
 frame.Parent = gui
 
 -- Радужная обводка фрейма
@@ -82,7 +82,7 @@ rainbowAnimation(textStroke)
 local teleportButton1 = Instance.new("TextButton")
 teleportButton1.Size = UDim2.new(0.9, 0, 0, 30)
 teleportButton1.Position = UDim2.new(0.05, 0, 0.2, 0)
-teleportButton1.Text = "Телепорт к TPTouch2"
+teleportButton1.Text = "Tp to Free Rewards"
 teleportButton1.Font = Enum.Font.SourceSansBold
 teleportButton1.TextSize = 16
 teleportButton1.Parent = frame
@@ -91,7 +91,7 @@ teleportButton1.Parent = frame
 local teleportButton2 = Instance.new("TextButton")
 teleportButton2.Size = UDim2.new(0.9, 0, 0, 30)
 teleportButton2.Position = UDim2.new(0.05, 0, 0.35, 0)
-teleportButton2.Text = "Телепорт к GearShop"
+teleportButton2.Text = "Teleport to GearShop"
 teleportButton2.Font = Enum.Font.SourceSansBold
 teleportButton2.TextSize = 16
 teleportButton2.Parent = frame
