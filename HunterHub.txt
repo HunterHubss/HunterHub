@@ -2,16 +2,16 @@ local player = game:GetService("Players").LocalPlayer
 local character = player.Character or player:WaitForChild("CharacterAdded"):Wait()
 local UIS = game:GetService("UserInputService")
 
--- Создаем GUI
+-- Create GUI
 local gui = Instance.new("ScreenGui")
 gui.Name = "HunterHubGUI"
 gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Основной фрейм
+-- Main frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 300) -- Увеличенный размер
-frame.Position = UDim2.new(0.5, -150, 0.5, -150)
+frame.Size = UDim2.new(0, 300, 0, 320) -- Increased height for better spacing
+frame.Position = UDim2.new(0.5, -150, 0.5, -160)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 frame.BackgroundTransparency = 0.2
@@ -19,14 +19,14 @@ frame.BorderSizePixel = 0
 frame.Visible = true
 frame.Parent = gui
 
--- Радужная обводка фрейма
+-- Rainbow frame border
 local frameStroke = Instance.new("UIStroke")
 frameStroke.Thickness = 3
 frameStroke.LineJoinMode = Enum.LineJoinMode.Round
 frameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 frameStroke.Parent = frame
 
--- Кнопка закрытия (X)
+-- Close button (X)
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 25, 0, 25)
 closeButton.Position = UDim2.new(1, -30, 0, 5)
@@ -37,7 +37,7 @@ closeButton.TextSize = 18
 closeButton.BackgroundTransparency = 1
 closeButton.Parent = frame
 
--- Заголовок
+-- Title
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -40, 0, 30)
 title.Position = UDim2.new(0, 10, 0, 5)
@@ -48,7 +48,7 @@ title.TextSize = 20
 title.BackgroundTransparency = 1
 title.Parent = frame
 
--- Подсказка
+-- Hint text
 local hint = Instance.new("TextLabel")
 hint.Size = UDim2.new(1, 0, 0, 20)
 hint.Position = UDim2.new(0, 0, 1, -25)
@@ -60,7 +60,7 @@ hint.TextSize = 14
 hint.BackgroundTransparency = 1
 hint.Parent = frame
 
--- Радужные обводки
+-- Rainbow animations
 local function rainbowAnimation(stroke)
     task.spawn(function()
         local hue = 0
@@ -78,28 +78,31 @@ textStroke.Parent = title
 rainbowAnimation(frameStroke)
 rainbowAnimation(textStroke)
 
--- Кнопки телепорта
+-- Teleport buttons with proper spacing
+local buttonYOffset = 0.2
+local buttonSpacing = 0.12
+
 local teleportButton1 = Instance.new("TextButton")
 teleportButton1.Size = UDim2.new(0.9, 0, 0, 30)
-teleportButton1.Position = UDim2.new(0.05, 0, 0.2, 0)
-teleportButton1.Text = "Телепорт к TPTouch2"
+teleportButton1.Position = UDim2.new(0.05, 0, buttonYOffset, 0)
+teleportButton1.Text = "Teleport to TPTouch2"
 teleportButton1.Font = Enum.Font.SourceSansBold
 teleportButton1.TextSize = 16
 teleportButton1.Parent = frame
 
 local teleportButton2 = Instance.new("TextButton")
 teleportButton2.Size = UDim2.new(0.9, 0, 0, 30)
-teleportButton2.Position = UDim2.new(0.05, 0, 0.3, 0)
-teleportButton2.Text = "Телепорт к GearShop"
+teleportButton2.Position = UDim2.new(0.05, 0, buttonYOffset + buttonSpacing, 0)
+teleportButton2.Text = "Teleport to GearShop"
 teleportButton2.Font = Enum.Font.SourceSansBold
 teleportButton2.TextSize = 16
 teleportButton2.Parent = frame
 
--- Текстбокс и кнопка скорости
+-- Speed controls
 local speedBox = Instance.new("TextBox")
 speedBox.Size = UDim2.new(0.6, 0, 0, 30)
-speedBox.Position = UDim2.new(0.05, 0, 0.4, 0)
-speedBox.PlaceholderText = "Скорость (число)"
+speedBox.Position = UDim2.new(0.05, 0, buttonYOffset + buttonSpacing*2, 0)
+speedBox.PlaceholderText = "Speed (number)"
 speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 speedBox.BackgroundTransparency = 0.2
 speedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -109,22 +112,22 @@ speedBox.Parent = frame
 
 local speedButton = Instance.new("TextButton")
 speedButton.Size = UDim2.new(0.25, 0, 0, 30)
-speedButton.Position = UDim2.new(0.7, 0, 0.4, 0)
-speedButton.Text = "Применить"
+speedButton.Position = UDim2.new(0.7, 0, buttonYOffset + buttonSpacing*2, 0)
+speedButton.Text = "Set Speed"
 speedButton.Font = Enum.Font.SourceSansBold
 speedButton.TextSize = 14
 speedButton.Parent = frame
 
--- Новая кнопка дублирования предметов
+-- Duplicate items button
 local duplicateButton = Instance.new("TextButton")
 duplicateButton.Size = UDim2.new(0.9, 0, 0, 30)
-duplicateButton.Position = UDim2.new(0.05, 0, 0.5, 0)
-duplicateButton.Text = "Дублировать предметы"
+duplicateButton.Position = UDim2.new(0.05, 0, buttonYOffset + buttonSpacing*3, 0)
+duplicateButton.Text = "Duplicate Items"
 duplicateButton.Font = Enum.Font.SourceSansBold
 duplicateButton.TextSize = 16
 duplicateButton.Parent = frame
 
--- Стилизация кнопок
+-- Button styling
 local function setupButton(button)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
     button.BackgroundTransparency = 0.3
@@ -144,7 +147,7 @@ setupButton(teleportButton2)
 setupButton(speedButton)
 setupButton(duplicateButton)
 
--- Функции
+-- Functions
 local function teleportTo(partName)
     local part = workspace:FindFirstChild(partName)
     if part then
@@ -153,7 +156,7 @@ local function teleportTo(partName)
             rootPart.CFrame = part.CFrame * CFrame.new(0, 3, 0)
         end
     else
-        warn(partName.." не найден в workspace!")
+        warn(partName.." not found in workspace!")
     end
 end
 
@@ -173,7 +176,7 @@ local function duplicateItems()
     local excludedItems = {"Shovel [Destroy Plants]", "Broken Ladder"}
     
     if backpack then
-        -- Дублируем предметы из инвентаря
+        -- Duplicate backpack items
         for _, item in ipairs(backpack:GetChildren()) do
             if not table.find(excludedItems, item.Name) then
                 local clone = item:Clone()
@@ -181,7 +184,7 @@ local function duplicateItems()
             end
         end
         
-        -- Дублируем предметы в руках персонажа
+        -- Duplicate equipped tools
         for _, item in ipairs(characterItems) do
             if item:IsA("Tool") and not table.find(excludedItems, item.Name) then
                 local clone = item:Clone()
@@ -191,7 +194,7 @@ local function duplicateItems()
     end
 end
 
--- Подключение кнопок
+-- Connect buttons
 teleportButton1.MouseButton1Click:Connect(function()
     teleportTo("TPTouch2")
 end)
@@ -203,19 +206,19 @@ end)
 speedButton.MouseButton1Click:Connect(changeSpeed)
 duplicateButton.MouseButton1Click:Connect(duplicateItems)
 
--- Закрытие GUI
+-- Close GUI
 closeButton.MouseButton1Click:Connect(function()
     frame.Visible = false
 end)
 
--- Переключение по Insert
+-- Toggle with Insert
 UIS.InputBegan:Connect(function(input, processed)
     if not processed and input.KeyCode == Enum.KeyCode.Insert then
         frame.Visible = not frame.Visible
     end
 end)
 
--- Перемещение GUI
+-- GUI dragging
 local dragging = false
 local dragInput, dragStart, frameStart
 
@@ -251,7 +254,7 @@ UIS.InputChanged:Connect(function(input)
     end
 end)
 
--- Обновление персонажа
+-- Update character reference
 player.CharacterAdded:Connect(function(newChar)
     character = newChar
 end)
