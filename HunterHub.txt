@@ -10,8 +10,8 @@ gui.Parent = player:WaitForChild("PlayerGui")
 
 -- Основной фрейм
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 250) -- Увеличенная высота для новой кнопки
-frame.Position = UDim2.new(0.5, -150, 0.5, -125)
+frame.Size = UDim2.new(0, 300, 0, 300) -- Увеличенный размер
+frame.Position = UDim2.new(0.5, -150, 0.5, -150)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 frame.BackgroundTransparency = 0.2
@@ -37,7 +37,7 @@ closeButton.TextSize = 18
 closeButton.BackgroundTransparency = 1
 closeButton.Parent = frame
 
--- Заголовок с радужной обводкой
+-- Заголовок
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -40, 0, 30)
 title.Position = UDim2.new(0, 10, 0, 5)
@@ -48,7 +48,7 @@ title.TextSize = 20
 title.BackgroundTransparency = 1
 title.Parent = frame
 
--- Подсказка внизу
+-- Подсказка
 local hint = Instance.new("TextLabel")
 hint.Size = UDim2.new(1, 0, 0, 20)
 hint.Position = UDim2.new(0, 0, 1, -25)
@@ -78,44 +78,51 @@ textStroke.Parent = title
 rainbowAnimation(frameStroke)
 rainbowAnimation(textStroke)
 
--- Кнопка телепорта к TPTouch2
+-- Кнопки телепорта
 local teleportButton1 = Instance.new("TextButton")
 teleportButton1.Size = UDim2.new(0.9, 0, 0, 30)
 teleportButton1.Position = UDim2.new(0.05, 0, 0.2, 0)
-teleportButton1.Text = "Tp to Free Rewards"
+teleportButton1.Text = "Телепорт к TPTouch2"
 teleportButton1.Font = Enum.Font.SourceSansBold
 teleportButton1.TextSize = 16
 teleportButton1.Parent = frame
 
--- Новая кнопка телепорта к GearShop
 local teleportButton2 = Instance.new("TextButton")
 teleportButton2.Size = UDim2.new(0.9, 0, 0, 30)
-teleportButton2.Position = UDim2.new(0.05, 0, 0.35, 0)
-teleportButton2.Text = "Teleport to GearShop"
+teleportButton2.Position = UDim2.new(0.05, 0, 0.3, 0)
+teleportButton2.Text = "Телепорт к GearShop"
 teleportButton2.Font = Enum.Font.SourceSansBold
 teleportButton2.TextSize = 16
 teleportButton2.Parent = frame
 
--- Текстбокс скорости (с исправленным цветом)
+-- Текстбокс и кнопка скорости
 local speedBox = Instance.new("TextBox")
 speedBox.Size = UDim2.new(0.6, 0, 0, 30)
-speedBox.Position = UDim2.new(0.05, 0, 0.65, 0)
+speedBox.Position = UDim2.new(0.05, 0, 0.4, 0)
 speedBox.PlaceholderText = "Скорость (число)"
-speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50) -- Исправленный цвет
+speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 speedBox.BackgroundTransparency = 0.2
 speedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 speedBox.Font = Enum.Font.SourceSans
 speedBox.TextSize = 14
 speedBox.Parent = frame
 
--- Кнопка применения скорости
 local speedButton = Instance.new("TextButton")
 speedButton.Size = UDim2.new(0.25, 0, 0, 30)
-speedButton.Position = UDim2.new(0.7, 0, 0.65, 0)
+speedButton.Position = UDim2.new(0.7, 0, 0.4, 0)
 speedButton.Text = "Применить"
 speedButton.Font = Enum.Font.SourceSansBold
 speedButton.TextSize = 14
 speedButton.Parent = frame
+
+-- Новая кнопка дублирования предметов
+local duplicateButton = Instance.new("TextButton")
+duplicateButton.Size = UDim2.new(0.9, 0, 0, 30)
+duplicateButton.Position = UDim2.new(0.05, 0, 0.5, 0)
+duplicateButton.Text = "Дублировать предметы"
+duplicateButton.Font = Enum.Font.SourceSansBold
+duplicateButton.TextSize = 16
+duplicateButton.Parent = frame
 
 -- Стилизация кнопок
 local function setupButton(button)
@@ -135,8 +142,9 @@ end
 setupButton(teleportButton1)
 setupButton(teleportButton2)
 setupButton(speedButton)
+setupButton(duplicateButton)
 
--- Функционал телепортации
+-- Функции
 local function teleportTo(partName)
     local part = workspace:FindFirstChild(partName)
     if part then
@@ -149,13 +157,36 @@ local function teleportTo(partName)
     end
 end
 
--- Функция изменения скорости
 local function changeSpeed()
     local speed = tonumber(speedBox.Text)
     if speed then
         local humanoid = character:FindFirstChildOfClass("Humanoid")
         if humanoid then
             humanoid.WalkSpeed = speed
+        end
+    end
+end
+
+local function duplicateItems()
+    local backpack = player:FindFirstChild("Backpack")
+    local characterItems = character:GetChildren()
+    local excludedItems = {"Shovel [Destroy Plants]", "Broken Ladder"}
+    
+    if backpack then
+        -- Дублируем предметы из инвентаря
+        for _, item in ipairs(backpack:GetChildren()) do
+            if not table.find(excludedItems, item.Name) then
+                local clone = item:Clone()
+                clone.Parent = backpack
+            end
+        end
+        
+        -- Дублируем предметы в руках персонажа
+        for _, item in ipairs(characterItems) do
+            if item:IsA("Tool") and not table.find(excludedItems, item.Name) then
+                local clone = item:Clone()
+                clone.Parent = backpack
+            end
         end
     end
 end
@@ -170,6 +201,7 @@ teleportButton2.MouseButton1Click:Connect(function()
 end)
 
 speedButton.MouseButton1Click:Connect(changeSpeed)
+duplicateButton.MouseButton1Click:Connect(duplicateItems)
 
 -- Закрытие GUI
 closeButton.MouseButton1Click:Connect(function()
