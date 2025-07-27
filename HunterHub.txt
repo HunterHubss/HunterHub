@@ -8,10 +8,10 @@ gui.Name = "HunterHubGUI"
 gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Main frame
+-- Main frame with rounded corners
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 320) -- Increased height for better spacing
-frame.Position = UDim2.new(0.5, -150, 0.5, -160)
+frame.Size = UDim2.new(0, 300, 0, 350)
+frame.Position = UDim2.new(0.5, -150, 0.5, -175)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 frame.BackgroundTransparency = 0.2
@@ -19,12 +19,149 @@ frame.BorderSizePixel = 0
 frame.Visible = true
 frame.Parent = gui
 
+-- Add rounded corners to main frame (12px radius)
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 12)
+frameCorner.Parent = frame
+
 -- Rainbow frame border
 local frameStroke = Instance.new("UIStroke")
 frameStroke.Thickness = 3
 frameStroke.LineJoinMode = Enum.LineJoinMode.Round
 frameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 frameStroke.Parent = frame
+
+-- Close button with rounded corners
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(1, -30, 0, 5)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 18
+closeButton.BackgroundTransparency = 1
+closeButton.Parent = frame
+
+-- Add rounded corners to close button (circle)
+local closeButtonCorner = Instance.new("UICorner")
+closeButtonCorner.CornerRadius = UDim.new(1, 0) -- Perfect circle
+closeButtonCorner.Parent = closeButton
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -40, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 5)
+title.Text = "Hunter Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+title.BackgroundTransparency = 1
+title.Parent = frame
+
+-- Hint text with rounded background
+local hintBackground = Instance.new("Frame")
+hintBackground.Size = UDim2.new(1, -10, 0, 20)
+hintBackground.Position = UDim2.new(0, 5, 1, -25)
+hintBackground.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+hintBackground.BackgroundTransparency = 0.7
+hintBackground.BorderSizePixel = 0
+hintBackground.Parent = frame
+
+-- Rounded corners for hint background (bottom only)
+local hintCorner = Instance.new("UICorner")
+hintCorner.CornerRadius = UDim.new(0, 8)
+hintCorner.Parent = hintBackground
+
+local hint = Instance.new("TextLabel")
+hint.Size = UDim2.new(1, 0, 1, 0)
+hint.Position = UDim2.new(0, 0, 0, 0)
+hint.Text = "Insert to open/close"
+hint.TextColor3 = Color3.fromRGB(200, 200, 200)
+hint.TextTransparency = 0.5
+hint.Font = Enum.Font.SourceSans
+hint.TextSize = 14
+hint.BackgroundTransparency = 1
+hint.Parent = hintBackground
+
+-- Rainbow animations
+local function rainbowAnimation(stroke)
+    task.spawn(function()
+        local hue = 0
+        while true do
+            hue = (hue + 0.01) % 1
+            stroke.Color = Color3.fromHSV(hue, 1, 1)
+            task.wait(0.05)
+        end
+    end)
+end
+
+local textStroke = Instance.new("UIStroke")
+textStroke.Thickness = 2
+textStroke.Parent = title
+rainbowAnimation(frameStroke)
+rainbowAnimation(textStroke)
+
+-- Function to create rounded buttons
+local function createRoundedButton(name, text, yPosition, textSize)
+    local button = Instance.new("TextButton")
+    button.Name = name
+    button.Size = UDim2.new(0.9, 0, 0, 30)
+    button.Position = UDim2.new(0.05, 0, yPosition, 0)
+    button.Text = text
+    button.Font = Enum.Font.SourceSansBold
+    button.TextSize = textSize or 16
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+    button.BackgroundTransparency = 0.3
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.AutoButtonColor = true
+    button.Parent = frame
+    
+    -- Add rounded corners (8px radius)
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 8)
+    buttonCorner.Parent = button
+    
+    -- Hover effects
+    button.MouseEnter:Connect(function()
+        button.BackgroundTransparency = 0.1
+    end)
+    button.MouseLeave:Connect(function()
+        button.BackgroundTransparency = 0.3
+    end)
+    
+    return button
+end
+
+-- Create all buttons with rounded corners
+local buttonYOffset = 0.2
+local buttonSpacing = 0.1
+
+local teleportButton1 = createRoundedButton("Teleport1", "Teleport to TPTouch2", buttonYOffset)
+local teleportButton2 = createRoundedButton("Teleport2", "Teleport to GearShop", buttonYOffset + buttonSpacing)
+
+-- Speed controls with rounded corners
+local speedBox = Instance.new("TextBox")
+speedBox.Size = UDim2.new(0.6, 0, 0, 30)
+speedBox.Position = UDim2.new(0.05, 0, buttonYOffset + buttonSpacing*2, 0)
+speedBox.PlaceholderText = "Speed (number)"
+speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+speedBox.BackgroundTransparency = 0.2
+speedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedBox.Font = Enum.Font.SourceSans
+speedBox.TextSize = 14
+speedBox.Parent = frame
+
+-- Add rounded corners to textbox (8px radius)
+local speedBoxCorner = Instance.new("UICorner")
+speedBoxCorner.CornerRadius = UDim.new(0, 8)
+speedBoxCorner.Parent = speedBox
+
+local speedButton = createRoundedButton("SpeedBtn", "Set Speed", buttonYOffset + buttonSpacing*2, 14)
+speedButton.Size = UDim2.new(0.25, 0, 0, 30)
+speedButton.Position = UDim2.new(0.7, 0, buttonYOffset + buttonSpacing*2, 0)
+
+local duplicateButton = createRoundedButton("DuplicateBtn", "Duplicate Items", buttonYOffset + buttonSpacing*3)
+local adminButton = createRoundedButton("AdminBtn", "Give Admin Panel", buttonYOffset + buttonSpacing*4)
 
 -- Close button (X)
 local closeButton = Instance.new("TextButton")
@@ -78,9 +215,9 @@ textStroke.Parent = title
 rainbowAnimation(frameStroke)
 rainbowAnimation(textStroke)
 
--- Teleport buttons with proper spacing
+-- Teleport buttons
 local buttonYOffset = 0.2
-local buttonSpacing = 0.12
+local buttonSpacing = 0.1
 
 local teleportButton1 = Instance.new("TextButton")
 teleportButton1.Size = UDim2.new(0.9, 0, 0, 30)
@@ -127,6 +264,15 @@ duplicateButton.Font = Enum.Font.SourceSansBold
 duplicateButton.TextSize = 16
 duplicateButton.Parent = frame
 
+-- New Admin Panel button
+local adminButton = Instance.new("TextButton")
+adminButton.Size = UDim2.new(0.9, 0, 0, 30)
+adminButton.Position = UDim2.new(0.05, 0, buttonYOffset + buttonSpacing*4, 0)
+adminButton.Text = "Give Admin Panel"
+adminButton.Font = Enum.Font.SourceSansBold
+adminButton.TextSize = 16
+adminButton.Parent = frame
+
 -- Button styling
 local function setupButton(button)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
@@ -146,6 +292,7 @@ setupButton(teleportButton1)
 setupButton(teleportButton2)
 setupButton(speedButton)
 setupButton(duplicateButton)
+setupButton(adminButton)
 
 -- Functions
 local function teleportTo(partName)
@@ -176,7 +323,6 @@ local function duplicateItems()
     local excludedItems = {"Shovel [Destroy Plants]", "Broken Ladder"}
     
     if backpack then
-        -- Duplicate backpack items
         for _, item in ipairs(backpack:GetChildren()) do
             if not table.find(excludedItems, item.Name) then
                 local clone = item:Clone()
@@ -184,13 +330,46 @@ local function duplicateItems()
             end
         end
         
-        -- Duplicate equipped tools
         for _, item in ipairs(characterItems) do
             if item:IsA("Tool") and not table.find(excludedItems, item.Name) then
                 local clone = item:Clone()
                 clone.Parent = backpack
             end
         end
+    end
+end
+
+-- Updated admin panel function
+local function giveAdminPanel()
+    -- Create the BoolValue if it doesn't exist
+    if not player:FindFirstChild("HasAdminPanel") then
+        local boolValue = Instance.new("BoolValue")
+        boolValue.Name = "HasAdminPanel"
+        boolValue.Value = true
+        boolValue.Parent = player
+        print("Admin panel access granted to "..player.Name)
+    end
+    
+    -- Find and show the admin buttons
+    local adminGui = player.PlayerGui:FindFirstChild("AdminPanel")
+    if adminGui then
+        local adminFrame = adminGui:FindFirstChild("Frame")
+        if adminFrame then
+            -- Make specific buttons visible
+            local buttonsToShow = {"ClearInventory", "Confirm", "ResetGarden"}
+            for _, buttonName in pairs(buttonsToShow) do
+                local button = adminFrame:FindFirstChild(buttonName)
+                if button and button:IsA("TextButton") then
+                    button.Visible = true
+                    print("Made admin button visible:", buttonName)
+                end
+            end
+            print("Admin buttons activated for", player.Name)
+        else
+            warn("Frame not found in AdminPanel")
+        end
+    else
+        warn("AdminPanel not found in PlayerGui")
     end
 end
 
@@ -205,6 +384,7 @@ end)
 
 speedButton.MouseButton1Click:Connect(changeSpeed)
 duplicateButton.MouseButton1Click:Connect(duplicateItems)
+adminButton.MouseButton1Click:Connect(giveAdminPanel)
 
 -- Close GUI
 closeButton.MouseButton1Click:Connect(function()
